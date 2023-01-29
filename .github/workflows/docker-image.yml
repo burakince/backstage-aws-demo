@@ -73,5 +73,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Add SHORT_SHA env property with commit short sha
+        run: |
+          shortSha=$(echo ${{ github.sha }} | cut -c1-8)
+          echo "SHORT_SHA=sha-${shortSha}" >> $GITHUB_ENV
+
       - name: Echo the Tag
-        run: echo "sha-${{ github.sha:0:7 }}"
+        run: echo ${SHORT_SHA}
