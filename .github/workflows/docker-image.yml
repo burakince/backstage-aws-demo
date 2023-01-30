@@ -114,8 +114,8 @@ jobs:
           # role-duration-seconds: 900
 
       - run: |
-        ls -al ~/.aws/
-        aws sts get-caller-identity
+          ls -al ~/.aws/
+          aws sts get-caller-identity
 
       - name: Terraform Init
         id: init
