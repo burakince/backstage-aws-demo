@@ -93,6 +93,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::775254019113:role/github-role
+          role-session-name: samplerolesession
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Echo Image Tag
