@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "dataengineering"
+
+    workspaces {
+      name = "backstage-aws-demo"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
