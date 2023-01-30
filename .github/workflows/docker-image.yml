@@ -97,7 +97,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::775254019113:role/github-role
-          role-session-name: samplerolesession
+          role-session-name: githubrolesession
           aws-region: ${{ env.AWS_REGION }}
 
       - uses: hashicorp/setup-terraform@v2
