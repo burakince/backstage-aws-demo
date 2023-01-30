@@ -104,10 +104,10 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          # role-skip-session-tagging: true
+          role-skip-session-tagging: true
           role-to-assume: arn:aws:iam::775254019113:role/github-role
           # role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
-          role-session-name: githubrolesession
+          # role-session-name: githubrolesession
           aws-region: ${{ env.AWS_REGION }}
           # web-identity-token-file: ${{ env.AWS_WEB_IDENTITY_TOKEN_FILE }}
           # web-identity-token-file: /tmp/web_identity_token_file
