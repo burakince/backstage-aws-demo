@@ -7,12 +7,10 @@ terraform {
   }
 }
 
-# Configure the AWS Provider to Frankfurt
 provider "aws" {
   region = local.region
 
-  assume_role {
-    role_arn     = "arn:aws:iam::775254019113:role/github-role"
-    session_name = "githubrolesession"
+  assume_role_with_web_identity {
+    role_arn = "arn:aws:iam::775254019113:role/github-role"
   }
 }
