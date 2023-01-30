@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image Build & Deploy CI
 
 on:
   push:
@@ -107,19 +107,16 @@ jobs:
         run: |
           terraform init
 
-      - name: Terraform Plan
-        id: plan
-        if: github.event_name == 'pull_request'
-        working-directory: terraform
-        run: |
-          terraform plan -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
-
       - name: Terraform Apply
         id: apply
-        if: github.event_name != 'pull_request'
         working-directory: terraform
         run: |
-          terraform apply -auto-approve -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
+          terraform apply -auto-approve \
+            -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} \
+            -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} \
+            -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} \
+            -var aws_region=${{ env.AWS_REGION }} \
+            -no-color
 
       # - name: Echo Image Tag
       #   run: echo ${{ needs.build.outputs.image-tag }}
