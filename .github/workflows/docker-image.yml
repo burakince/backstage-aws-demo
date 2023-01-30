@@ -117,6 +117,7 @@ jobs:
 
       - run: |
           aws sts get-caller-identity
+          aws configure get region
 
       - name: Terraform Init
         id: init
