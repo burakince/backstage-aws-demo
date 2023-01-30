@@ -129,6 +129,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
+          echo ${{ env.AWS_REGION }}
           cd terraform
           terraform plan -no-color
         env:
