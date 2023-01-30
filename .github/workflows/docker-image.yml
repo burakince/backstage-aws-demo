@@ -115,8 +115,10 @@ jobs:
           role-session-name: githubrolesession
           aws-region: ${{ env.AWS_REGION }}
           # web-identity-token-file: ${{ env.AWS_WEB_IDENTITY_TOKEN_FILE }}
-          web-identity-token-file: /tmp/web_identity_token_file
+          # web-identity-token-file: /tmp/web_identity_token_file
           # role-duration-seconds: 900
+
+      - run: aws sts get-caller-identity
 
       - name: Terraform Init
         id: init
