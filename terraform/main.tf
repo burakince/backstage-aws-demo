@@ -86,7 +86,7 @@ module "ecs" {
   tags = local.tags
 }
 
-esource "aws_cloudwatch_log_group" "backstage" {
+resource "aws_cloudwatch_log_group" "backstage" {
   name_prefix       = "${local.name}-"
   retention_in_days = 1
 }
