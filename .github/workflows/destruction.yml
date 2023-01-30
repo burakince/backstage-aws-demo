@@ -2,6 +2,11 @@ name: Destroy Infrastructure CI
 
 on:
   workflow_dispatch:
+    inputs:
+      approve:
+        description: 'Please type `${{ github.repository }}` to confirm delete operation.'
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -11,6 +16,8 @@ permissions:
 jobs:
 
   destroy:
+    if: github.event.inputs.approve == github.repository
+
     runs-on: ubuntu-latest
 
     steps:
