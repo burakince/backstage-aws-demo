@@ -99,8 +99,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::775254019113:role/github-role
-          audience: sts.amazonaws.com
-          role-session-name: githubactions
           aws-region: eu-central-1
 
       - name: Terraform Init
@@ -111,18 +109,17 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        # if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         working-directory: terraform
         run: |
-          # terraform plan -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
-          terraform plan -no-color
+          terraform plan -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
 
-      # - name: Terraform Apply
-      #   id: plan
-      #   if: github.event_name != 'pull_request'
-      #   working-directory: terraform
-      #   run: |
-      #     terraform apply -auto-approve -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
+      - name: Terraform Apply
+        id: plan
+        if: github.event_name != 'pull_request'
+        working-directory: terraform
+        run: |
+          terraform apply -auto-approve -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
 
       # - name: Echo Image Tag
       #   run: echo ${{ needs.build.outputs.image-tag }}
