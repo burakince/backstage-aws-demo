@@ -129,14 +129,9 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          echo ${{ env.AWS_REGION }}
           cd terraform
-          terraform plan -no-color
+          terraform plan -var aws_access_key=${{ env.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }} -var aws_session_token=${{ env.AWS_SESSION_TOKEN }} -var aws_region=${{ env.AWS_REGION }} -no-color
         env:
-          TF_VAR_aws_access_key: ${{ env.AWS_ACCESS_KEY_ID }}
-          TF_VAR_aws_secret_key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          TF_VAR_aws_session_token: ${{ env.AWS_SESSION_TOKEN }}
-          TF_VAR_aws_region: ${{ env.AWS_REGION }}
           TF_LOG: TRACE
 
       # - name: Echo Image Tag
