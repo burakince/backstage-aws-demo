@@ -1,6 +1,7 @@
 terraform {
   cloud {
     organization = "dataengineering"
+
     workspaces {
       name = "backstage-aws-demo"
     }
@@ -18,5 +19,5 @@ terraform {
 
 # Configure the AWS Provider to Frankfurt
 provider "aws" {
-  region = "eu-central-1"
+  region = local.region
 }
