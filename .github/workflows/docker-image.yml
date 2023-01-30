@@ -113,7 +113,9 @@ jobs:
           # web-identity-token-file: /tmp/web_identity_token_file
           # role-duration-seconds: 900
 
-      - run: aws sts get-caller-identity
+      - run: |
+        ls -al ~/.aws/
+        aws sts get-caller-identity
 
       - name: Terraform Init
         id: init
