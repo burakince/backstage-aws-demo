@@ -16,7 +16,6 @@ env:
   # REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  AWS_REGION: eu-central-1
 
 jobs:
 
@@ -90,15 +89,24 @@ jobs:
       run:
         working-directory: terraform
 
+    env:
+      AWS_WEB_IDENTITY_TOKEN_FILE: /tmp/awscreds
+      AWS_ROLE_ARN: arn:aws:iam::775254019113:role/github-role
+      AWS_REGION: eu-central-1
+      AWS_DEFAULT_REGION: eu-central-1
+      AWS_ROLE_SESSION_NAME: githubrolesession
+
     steps:
       - uses: actions/checkout@v3
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::775254019113:role/github-role
-          role-session-name: githubrolesession
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
           aws-region: ${{ env.AWS_REGION }}
+          web-identity-token-file: ${{ env.AWS_WEB_IDENTITY_TOKEN_FILE }}
+          role-duration-seconds: 900
 
       - uses: hashicorp/setup-terraform@v2
         with:
