@@ -8,16 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  region = local.region
-
-  assume_role {
-    role_arn     = "arn:aws:iam::775254019113:role/github-role"
-    session_name = "githubactions"
-  }
-
-  # assume_role_with_web_identity {
-  #   role_arn                = "arn:aws:iam::775254019113:role/github-role"
-  #   session_name            = "githubrolesession"
-  #   web_identity_token_file = var.web_identity_token_file
-  # }
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  token      = var.aws_session_token
+  region     = var.aws_region
 }

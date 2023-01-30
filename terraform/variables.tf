@@ -1,4 +1,15 @@
-# variable "web_identity_token_file" {
-#   type    = string
-#   default = "/tmp/web_identity_token_file"
-# }
+variable "aws_access_key" {
+  type = string
+}
+
+variable "aws_secret_key" {
+  type = string
+}
+
+variable "aws_session_token" {
+  type = string
+}
+
+variable "aws_region" {
+  type = string
+}
