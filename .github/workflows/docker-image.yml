@@ -122,13 +122,14 @@ jobs:
 
       - name: Terraform Init
         id: init
-        working-directory: terraform
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
 
       - name: Terraform Plan
         id: plan
-        working-directory: terraform
         run: |
+          cd terraform
           terraform plan -no-color
         env:
           TF_VAR_aws_access_key: ${{ env.AWS_ACCESS_KEY_ID }}
