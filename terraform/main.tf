@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "backstage" {
   container_definitions = jsonencode([
     {
       name      = "${local.name}-app"
-      image     = "${var.docker_registry}/${var.image_name}:${var.image_tag}"
+      image     = "${aws_ecr_repository.registry.repository_url}/${var.image_name}:${var.image_tag}"
       essential = true
       cpu       = var.fargate_cpu
       memory    = var.fargate_memory

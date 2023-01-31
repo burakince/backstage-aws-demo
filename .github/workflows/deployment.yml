@@ -15,7 +15,7 @@ permissions:
 env:
   REPOSITORY: backstage-container-registry
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: backstage
 
 jobs:
 

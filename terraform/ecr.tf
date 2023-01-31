@@ -57,6 +57,7 @@ resource "aws_ecr_repository_policy" "repository_policy" {
             "ecr:InitiateLayerUpload",
             "ecr:UploadLayerPart",
             "ecr:CompleteLayerUpload",
+            "ecr:GetAuthorizationToken",
             "ecr:DescribeRepositories",
             "ecr:GetRepositoryPolicy",
             "ecr:ListImages",

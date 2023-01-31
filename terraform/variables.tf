@@ -14,14 +14,9 @@ variable "aws_region" {
   type = string
 }
 
-variable "docker_registry" {
-  type    = string
-  default = "ghcr.io"
-}
-
 variable "image_name" {
   type    = string
-  default = "burakince/backstage-aws-demo"
+  default = "backstage"
 }
 
 variable "image_tag" {
