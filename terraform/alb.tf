@@ -1,10 +1,10 @@
-resource "aws_alb" "main" {
+resource "aws_lb" "main" {
   name            = "${local.name}-load-balancer"
-  subnets         = module.vpc.public_subnets.*.id
+  subnets         = module.vpc.public_subnets
   security_groups = [aws_security_group.lb.id]
 }
 
-resource "aws_alb_target_group" "app" {
+resource "aws_lb_target_group" "app" {
   name        = "${local.name}-target-group"
   port        = 80
   protocol    = "HTTP"
@@ -23,13 +23,13 @@ resource "aws_alb_target_group" "app" {
 }
 
 # Redirect all traffic from the ALB to the target group
-resource "aws_alb_listener" "front_end" {
-  load_balancer_arn = aws_alb.main.id
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.main.id
   port              = var.app_port
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.app.id
+    target_group_arn = aws_lb_target_group.app.id
     type             = "forward"
   }
 }

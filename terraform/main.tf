@@ -83,7 +83,7 @@ resource "aws_ecs_service" "backstage" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets          = module.vpc.private_subnets.*.id
+    subnets          = module.vpc.private_subnets
     assign_public_ip = true
   }
 
@@ -93,5 +93,5 @@ resource "aws_ecs_service" "backstage" {
     container_port   = var.app_port
   }
 
-  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_lb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
