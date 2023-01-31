@@ -72,3 +72,8 @@ output "load_balancer_hostname" {
   description = "AWS Load Balancer Hostname"
   value       = aws_lb.main.dns_name
 }
+
+output "container_registry_url" {
+  description = "ECR Repository URL"
+  value       = aws_ecr_repository.registry.repository_url
+}
