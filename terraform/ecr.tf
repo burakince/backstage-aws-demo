@@ -2,7 +2,7 @@ resource "aws_ecr_repository" "registry" {
   name = "${local.name}-container-registry"
 }
 
-resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
+resource "aws_ecr_lifecycle_policy" "lifecycle_last_three_images_policy" {
   repository = aws_ecr_repository.registry.name
 
   policy = jsonencode(
@@ -12,9 +12,33 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
           rulePriority = 1
           description  = "Keep last 3 images"
           selection = {
-            tagStatus   = "tagged"
+            tagStatus   = "any"
             countType   = "imageCountMoreThan"
-            countNumber = 30
+            countNumber = 3
+          }
+          action = {
+            type = "expire"
+          }
+        }
+      ]
+    }
+  )
+}
+
+resource "aws_ecr_lifecycle_policy" "lifecycle_untagged_images_policy" {
+  repository = aws_ecr_repository.registry.name
+
+  policy = jsonencode(
+    {
+      rules = [
+        {
+          rulePriority = 2
+          description  = "Expire untagged images older than 1 days"
+          selection = {
+            tagStatus   = "untagged"
+            countType   = "sinceImagePushed"
+            countUnit   = "days"
+            countNumber = 1
           }
           action = {
             type = "expire"
