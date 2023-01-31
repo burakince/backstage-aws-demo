@@ -53,9 +53,10 @@ resource "aws_ecs_task_definition" "backstage" {
         {
           containerPort = var.app_port
           hostPort      = var.app_port
-          protocol      = "TCP"
+          protocol      = "tcp"
         }
       ]
+      volumesFrom = []
       logConfiguration = {
         logDriver = "awslogs"
         options = {
