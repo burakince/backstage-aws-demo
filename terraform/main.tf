@@ -31,96 +31,68 @@ module "vpc" {
   }
 }
 
-module "security_group" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "4.17.1"
-
-  name   = local.name
-  vpc_id = module.vpc.vpc_id
-
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["https-443-tcp"]
-
-  egress_rules = ["all-all"]
-
-  tags = local.tags
-}
-
-resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "/aws/ecs/${local.name}"
-  retention_in_days = 7
-
-  tags = local.tags
-}
-
-module "ecs" {
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "4.1.3"
-
-  cluster_name = local.name
-
-  cluster_configuration = {
-    execute_command_configuration = {
-      logging = "OVERRIDE"
-      log_configuration = {
-        cloud_watch_log_group_name = aws_cloudwatch_log_group.ecs.name
-      }
-    }
-  }
-
-  # Capacity provider
-  fargate_capacity_providers = {
-    FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 50
-        base   = 20
-      }
-    }
-    FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
-    }
-  }
-
-  tags = local.tags
-}
-
-resource "aws_cloudwatch_log_group" "backstage" {
-  name_prefix       = "${local.name}-"
-  retention_in_days = 1
+resource "aws_ecs_cluster" "ecs" {
+  name = "${local.name}-ecs"
 }
 
 resource "aws_ecs_task_definition" "backstage" {
-  family = local.name
-
-  container_definitions = <<EOF
-[
-  {
-    "name": "${local.name}",
-    "image": "${var.docker_registry}/${var.image_name}:${var.image_tag}",
-    "cpu": 0,
-    "memory": 128,
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "${local.region}",
-        "awslogs-group": "${aws_cloudwatch_log_group.backstage.name}",
-        "awslogs-stream-prefix": "ec2"
+  family                   = "${local.name}-task"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.fargate_cpu
+  memory                   = var.fargate_memory
+  container_definitions = jsonencode([
+    {
+      name              = "${local.name}-app"
+      image             = "${var.docker_registry}/${var.image_name}:${var.image_tag}"
+      essential         = true
+      cpu               = 512
+      memory            = 1024
+      memoryReservation = 64
+      portMappings = [
+        {
+          containerPort = var.app_port
+          hostPort      = var.app_port
+          protocol      = "TCP"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/${local.name}-app"
+          "awslogs-region"        = local.region
+          "awslogs-stream-prefix" = "ecs"
+        }
       }
+      environment = [
+        {
+          name  = "ENV"
+          value = "TEST"
+        }
+      ]
     }
-  }
-]
-EOF
+  ])
 }
 
 resource "aws_ecs_service" "backstage" {
-  name            = local.name
-  cluster         = module.ecs.cluster_id
+  name            = "${local.name}-service"
+  cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.backstage.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
-  desired_count = 1
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    subnets          = module.vpc.private_subnets.*.id
+    assign_public_ip = true
+  }
 
-  deployment_maximum_percent         = 100
-  deployment_minimum_healthy_percent = 0
+  load_balancer {
+    target_group_arn = aws_alb_target_group.app.id
+    container_name   = "${local.name}-app"
+    container_port   = var.app_port
+  }
+
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
