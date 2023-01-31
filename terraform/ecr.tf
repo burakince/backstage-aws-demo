@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "registry" {
-  name = "${local.name}-container-registry"
+  name = local.name
 }
 
 resource "aws_ecr_lifecycle_policy" "lifecycle_images_policy" {

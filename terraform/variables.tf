@@ -14,11 +14,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "image_name" {
-  type    = string
-  default = "backstage"
-}
-
 variable "image_tag" {
   type    = string
   default = "latest"
