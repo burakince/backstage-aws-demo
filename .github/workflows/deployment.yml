@@ -7,6 +7,8 @@ on:
       - '.github/workflows/deployment.yml'
       - 'backstage-demo/**'
 
+  workflow_dispatch:
+
 permissions:
   contents: read
   packages: write
