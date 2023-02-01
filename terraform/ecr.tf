@@ -1,5 +1,7 @@
 resource "aws_ecr_repository" "registry" {
   name = local.name
+
+  force_delete = true
 }
 
 resource "aws_ecr_lifecycle_policy" "lifecycle_images_policy" {
