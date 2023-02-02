@@ -113,5 +113,5 @@ resource "aws_ecs_service" "backstage" {
     container_port   = var.app_port
   }
 
-  depends_on = [aws_lb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_lb_listener.http_listener, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
