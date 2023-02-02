@@ -31,8 +31,20 @@ module "vpc" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "backstage" {
+  name = local.name
+}
+
 resource "aws_ecs_cluster" "ecs" {
   name = "${local.name}-ecs"
+
+  configuration {
+    execute_command_configuration {
+      log_configuration {
+        cloud_watch_log_group_name = aws_cloudwatch_log_group.backstage.name
+      }
+    }
+  }
 }
 
 resource "aws_ecs_task_definition" "backstage" {
@@ -83,9 +95,9 @@ resource "aws_ecs_service" "backstage" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets          = module.vpc.private_subnets
-    assign_public_ip = true
+    security_groups = [aws_security_group.ecs_tasks.id]
+    subnets         = module.vpc.private_subnets
+    # assign_public_ip = true
   }
 
   load_balancer {
