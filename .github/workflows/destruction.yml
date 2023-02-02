@@ -29,7 +29,7 @@ jobs:
           terraform_version: 1.3.7
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: configure aws credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::775254019113:role/github-role

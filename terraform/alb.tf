@@ -6,7 +6,7 @@ resource "aws_lb" "main" {
 
 resource "aws_lb_target_group" "app" {
   name        = "${local.name}-target-group"
-  port        = 80
+  port        = 7007
   protocol    = "HTTP"
   vpc_id      = module.vpc.vpc_id
   target_type = "ip"
@@ -25,7 +25,7 @@ resource "aws_lb_target_group" "app" {
 # Redirect all traffic from the ALB to the target group
 resource "aws_lb_listener" "front_end" {
   load_balancer_arn = aws_lb.main.id
-  port              = var.app_port
+  port              = "80"
   protocol          = "HTTP"
 
   default_action {
