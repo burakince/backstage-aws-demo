@@ -32,7 +32,7 @@ module "vpc" {
 }
 
 resource "aws_cloudwatch_log_group" "backstage" {
-  name = local.name
+  name = "/ecs/${local.name}"
 }
 
 resource "aws_ecs_cluster" "ecs" {
@@ -79,7 +79,7 @@ resource "aws_ecs_task_definition" "backstage" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/${local.name}-app"
+          "awslogs-group"         = "/ecs/${local.name}"
           "awslogs-region"        = local.region
           "awslogs-stream-prefix" = "ecs"
         }
